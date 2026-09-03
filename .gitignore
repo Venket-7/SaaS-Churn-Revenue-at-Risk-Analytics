@@ -1,0 +1,29 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Power BI temp/lock files
+~$*.pbix
+*.pbix.bak
+
+# Excel/CSV temp lock files (opened-file locks)
+~$*.xlsx
+~$*.xls
+~$*.csv
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# Python (if analysis scripts are added later)
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Environment/config secrets
+.env
