@@ -1,47 +1,62 @@
 # 📊 SaaS Churn & Revenue-at-Risk Analytics
 
-An end-to-end analytics project analyzing a B2B SaaS company's customer base to uncover business insights on churn, revenue at risk, product usage, and customer support — using **MySQL** for analysis and **Power BI** for reporting.
+An end-to-end SaaS analytics project using **MySQL, SQL, Power BI, DAX, Python, and Machine Learning** to analyze customer churn, recurring revenue exposure, churn drivers, product usage, customer support, and predictive churn risk.
 
 ---
 
 ## 📌 Project Overview
 
-Understanding why customers leave — and what it costs — is essential to running a healthy subscription business.
-In this project, RavenStack's customer data is analyzed to answer key business questions such as:
-- Which customers are churning, and why?
-- How much monthly recurring revenue is at risk because of it?
-- Does product usage differ between customers who churn and those who stay?
-- Does support experience (response time, resolution time, satisfaction) relate to churn?
-- Which active customers today look most likely to churn next?
+This project analyzes RavenStack's SaaS customer data to answer business questions around:
 
-The project converts raw account, subscription, usage, and support data into an interactive Power BI report built for four different questions a SaaS business asks.
+- Customer churn
+- Churn by customer segment
+- MRR and ARR
+- Churned MRR and revenue exposure
+- Churn reasons
+- Product usage and engagement
+- Customer support experience
+- Customer satisfaction
+- Predictive churn modeling
+- Customer risk segmentation
+- Model explainability using SHAP
+
+The project contains both **descriptive/diagnostic analytics** and **predictive analysis**.
 
 ---
 
 ## 🎯 Business Objectives
 
-- Quantify overall and segment-level churn (by plan, industry, country, company size).
-- Translate churn into dollar terms via Monthly Recurring Revenue (MRR) at risk.
-- Identify the leading reasons customers churn and where lost revenue concentrates.
-- Test whether product usage and support experience actually predict churn.
-- Build a composite risk score to flag active accounts before they churn.
-- Provide business recommendations based on data-driven insights, not assumptions.
+- Measure overall and segment-level customer churn.
+- Analyze churn by plan, industry, country, company size, and billing frequency.
+- Analyze when churn occurs.
+- Measure MRR, ARR, Active MRR, and Churned MRR.
+- Identify final churn reasons and their associated lost MRR.
+- Compare product usage and product errors between retained and churned customers.
+- Analyze customer engagement and its relationship with churn.
+- Compare support tickets, response time, resolution time, and satisfaction between retained and churned customers.
+- Build and evaluate churn prediction models.
+- Generate customer churn probabilities and risk segments.
+- Explain model predictions using SHAP.
 
 ---
 
 # 🛠️ Tech Stack
 
 - **Database:** MySQL
-- **Language:** SQL
-- **Data Preparation:** Power Query (Power BI)
-- **Visualization:** Power BI
+- **Query Language:** SQL
+- **Business Intelligence:** Power BI
+- **Power BI Calculations:** DAX
+- **Data Preparation / Analysis:** Python, pandas
+- **Machine Learning:** scikit-learn, XGBoost
+- **Model Explainability:** SHAP
+- **Visualization:** Power BI, Matplotlib
 - **Version Control:** Git & GitHub
 
 ---
 
 # 📁 Project Structure
 
-```
+```text
 SaaS-Churn-Revenue-at-Risk-Analytics
 │
 ├── Dataset
@@ -52,58 +67,108 @@ SaaS-Churn-Revenue-at-Risk-Analytics
 │   └── ravenstack_support_tickets.csv
 │
 ├── SQL
-│   └── Saas_Churn_Analysis.sql
+│   ├── 01_customer_churn.sql
+│   ├── 02_revenue_analysis.sql
+│   ├── 03_churn_drivers.sql
+│   ├── 04_product_usage.sql
+│   └── 05_support_analysis.sql
 │
 ├── Power BI Dashboard
 │   └── Saas_Churn_Analysis.pbix
+│       └──Images
+│           ├── Executive_Overview.png
+│           ├── Revenue_Exposure.png
+│           ├── Customer_Churn_Segmentation.png
+│           └── Churn_Drivers.png
 │
-├── Images
-│   ├── Executive Summary Saas.png
-│   ├── Customer Churn Analysis.png
-│   ├── Revenue and Revenue at Risk.png
-│   └── Churn Drivers and Customer Experience.png
+├── Predicitve_analysis
+│   ├── churn_model.ipynb
+│   ├── model_comparison_test.csv
+│   ├── confusion_matrix.png
+│   ├── risk_segments.png
+│   ├── roc_curves.png
+│   └── shap_summary.png
 │
+├── Documentation
+|   └──Business_Questions.txt
+|
+├── requirements
 ├── README.md
-│
 ├── LICENSE
-│
 └── .gitignore
 ```
 
 ---
 
-# 📂 Dataset Information
+# 📂 Dataset
 
-Five related tables covering ~500 customer accounts:
+The project uses five related RavenStack tables covering approximately **500 customer accounts**.
 
-- **Accounts** — plan tier (Basic/Pro/Enterprise), industry, country, seats, trial status, churn flag
-- **Subscriptions** — full subscription history per account: MRR/ARR, billing frequency, plan changes, start/end dates
-- **Churn Events** — churn date, reason code, reactivation flag, refund amount, feedback text
-- **Feature Usage** — usage count, error count, session duration, and beta-feature flag per subscription
-- **Support Tickets** — first-response time, resolution time, satisfaction score, priority, escalation flag
+### Accounts
+- Plan tier
+- Industry
+- Country
+- Seats
+- Trial status
+- Churn flag
+- Signup date
+
+### Subscriptions
+- Subscription history
+- MRR
+- ARR
+- Billing frequency
+- Plan changes
+- Start and end dates
+
+### Churn Events
+- Churn date
+- Churn reason
+- Reactivation flag
+- Refund amount
+- Feedback
+
+### Feature Usage
+- Feature name
+- Usage count
+- Error count
+- Session duration
+- Beta-feature usage
+
+### Support Tickets
+- Ticket information
+- First-response time
+- Resolution time
+- Satisfaction score
+- Priority
+- Escalation flag
 
 ---
 
 # 🧹 Data Preparation
 
-Cleaning and modeling were done in Power Query before analysis:
+The data was prepared for analysis before building the dashboard and predictive model.
 
-- Verified referential integrity across all 5 tables — no orphaned foreign keys
-- Standardized data types on load (dates, booleans, currency) — CSV imports often mis-tag these as text
-- Found that `ravenstack_subscriptions` stores full historical records (~10 rows per account, not one) — summing MRR directly overstates revenue by ~9x. Built a deduplicated **Current Subscriptions** table (latest `start_date` per account) so all revenue measures reflect current, not lifetime-summed, MRR
-- Left missing `satisfaction_score` values (~41% of tickets) as blank rather than imputing zero, to avoid skewing averages
-- Confirmed categorical fields (industry, country, plan tier, reason code, priority) were already consistent — no further cleanup needed
+Key preparation work included:
+
+- Standardizing data types.
+- Checking relationships between the five tables.
+- Handling the historical subscription records when calculating MRR measures.
+- Keeping missing satisfaction values as missing instead of treating them as zero.
+- Creating customer-level aggregated features for predictive modeling.
 
 ---
 
-# 🗄️ Database Design
+# 🗄️ Database
 
-**Database Name**
+### Database Name
+
 ```sql
 Saas_Churn_Analysis
 ```
 
-**Main Tables**
+### Tables
+
 ```text
 ravenstack_accounts
 ravenstack_subscriptions
@@ -116,68 +181,230 @@ ravenstack_support_tickets
 
 # 📊 SQL Business Analysis
 
-## Section 1 – Customer Churn Analysis
-- Total customers and overall churn rate
-- Churn rate by plan, industry, country, and company size
+## 01 — Customer Churn Analysis
+
+- What is the customer churn rate?
+- Churn by plan
+- Churn by industry
+- Churn by country
+- Churn by company size
 - Does billing frequency affect churn?
-- How long do customers stay before churning?
-- Monthly and quarterly churn trends
+- When does churn occur?
 
-## Section 2 – Revenue & Revenue-at-Risk
-- Total MRR, ARR, Active MRR, Churned MRR
-- What percentage of MRR is at risk?
-- Revenue at risk by plan, industry, and country
-- Are high-value customers disproportionately churning?
-
-## Section 3 – Churn Reason Analysis
-- Top churn reasons and their share of total churn
-- Which reason causes the highest lost MRR?
-- Which plan has the highest pricing-related churn?
-- Which industry has the highest support-related churn?
-- Customers with multiple churn events
-
-## Section 4 – Product Usage & Engagement
-- Average usage: retained vs. churned customers
-- Most-used features overall, and separately for retained vs. churned
-- Which features show the largest usage gap?
-- Do churned customers generate more product errors?
-- Is low engagement associated with higher churn?
-
-## Section 5 – Customer Support Analysis
-- Average ticket count per customer
-- Ticket volume, response time, and resolution time: churned vs. retained
-- Does satisfaction differ between churned and retained customers?
-- Churn rate by response-time bucket and by satisfaction level
-
-## Section 6 – Customer Lifecycle & Reactivation
-- Average customer lifetime and typical churn stage
-- Which signup cohorts have the highest churn?
-- Overall reactivation rate, by plan, and by churn reason
+fileciteturn5file2L9-L39
 
 ---
 
-# 📈 Dashboard
+## 02 — Revenue Analysis
 
-A 4-page Power BI report, each page built around a specific question:
+- What is Total MRR?
+- What is Total ARR?
+- What is Churned MRR?
+- What is Churned MRR as a percentage of current MRR?
+- Which plans have the highest churned MRR?
+- Which industries have the highest churned MRR?
+- Which countries have the highest churned MRR?
 
-**1. Executive Summary** — Top-level KPIs (500 customers, 22.00% churn rate, 110 churned accounts), monthly churn trend, plan-wise churn breakdown table, top churn reasons, and revenue at risk by plan.
+fileciteturn5file4L9-L55
 
-**2. Customer Churn Analysis** — Churn rate by plan, industry, and country; trial vs. non-trial split; average customer lifetime — isolates which segments churn most.
+---
 
-**3. Revenue & Revenue-at-Risk** — Total MRR by plan, a revenue-at-risk gauge, a plan-level revenue exposure table, and revenue at risk by industry and plan.
+## 03 — Churn Drivers
 
-**4. Churn Drivers & Customer Experience** — Average usage, error rate, first-response time, and resolution time compared side-by-side for churned vs. retained customers, plus a full support-experience breakdown table.
+- What are the top final churn reasons?
+- Which final churn reason is associated with the highest lost MRR?
+
+fileciteturn5file1L9-L23
+
+---
+
+## 04 — Product Usage & Engagement
+
+- What is the average usage for retained customers?
+- What is the average usage for churned customers?
+- Do churned customers have more product errors?
+- Is low engagement associated with higher churn?
+
+Engagement is grouped into:
+
+- Low Engagement
+- Medium Engagement
+- High Engagement
+
+fileciteturn5file3L9-L57
+
+---
+
+## 05 — Customer Support Analysis
+
+- Do churned customers have more tickets?
+- Do churned customers have slower first responses?
+- Do churned customers have longer resolution times?
+- Does satisfaction differ between churned and retained customers?
+- What is churn by satisfaction level?
+
+fileciteturn5file5L8-L72
+
+---
+
+# 📈 Power BI Dashboard
+
+The Power BI report contains four pages.
+
+### 1. Executive Summary
+
+- Total customers
+- Churned customers
+- Churn rate
+- MRR
+- Monthly churn trend
+- Plan-wise churn
+- Top churn reasons
+- Revenue exposure
+
+### 2. Customer Churn Analysis
+
+- Churn rate by plan
+- Churn rate by industry
+- Churn rate by country
+- Trial vs. non-trial analysis
+- Average customer lifetime
+- Customer segmentation
+
+### 3. Revenue & Revenue-at-Risk
+
+- Total MRR
+- Active MRR
+- Churned MRR
+- Churned MRR %
+- MRR by plan
+- Revenue exposure by plan
+- Revenue exposure by industry
+
+### 4. Churn Drivers & Customer Experience
+
+- Churn reasons
+- Average usage
+- Average errors
+- Engagement level
+- Support tickets
+- First-response time
+- Resolution time
+- Satisfaction
+- Retained vs. churned comparisons
+
+---
+
+# 🤖 Predictive Churn Modeling
+
+A predictive churn analysis was developed using customer-level features from the SaaS data.
+
+### Models evaluated
+
+- Logistic Regression
+- Random Forest
+- XGBoost
+
+The modeling workflow includes:
+
+- Customer-level feature engineering
+- Model comparison
+- Train/test evaluation
+- ROC curves
+- Churn probability output
+- Risk segmentation
+- SHAP explainability
+
+---
+
+# 📊 Model Evaluation
+
+The hold-out ROC curves produced the following AUC values shown in the project outputs:
+
+| Model | ROC-AUC |
+|---|---:|
+| Logistic Regression | 0.62 |
+| Random Forest | 0.58 |
+| XGBoost | 0.52 |
+
+The project also includes the Random Forest confusion matrix at a **0.23 threshold**.
+
+The resulting test-set confusion matrix was:
+
+```text
+                 Predicted
+                 Retained   Churned
+
+Actual Retained      0         78
+Actual Churned       0         22
+```
+
+---
+
+# 🎯 Risk Segmentation
+
+The predictive workflow also creates customer risk segments based on model-estimated churn probabilities.
+
+The project output contains:
+
+- Low Risk
+- Medium Risk
+- High Risk
+
+The observed churn rates shown in the risk-segment analysis are approximately:
+
+- Low: 20%
+- Medium: 23%
+- High: 25%
+
+---
+
+# 🔎 SHAP Explainability
+
+SHAP was used to analyze feature importance and understand model output.
+
+The SHAP analysis includes features such as:
+
+- Average MRR
+- Average first-response time
+- Error rate
+- Average session duration
+- Subscription tenure
+- Distinct features used
+- Account age
+- Trial subscription share
+- Beta usage share
+- Industry
+- Maximum MRR
+- High-priority ticket share
 
 ---
 
 # 📈 Key Business Insights
 
-- **22.00% overall churn rate** (110 of 500 customers), fairly even across plan tiers (~22% each) — plan tier alone does not predict churn.
-- **DevTools has the highest industry churn rate (30.97%)**, nearly double Cybersecurity's (16.00%) — industry is a far stronger churn signal than plan.
-- **Germany has the highest country-level churn (32.00%)**; Australia the lowest (12.50%).
-- **Top churn reasons are feature gaps (114 events) and budget/support issues (104 each)** — ahead of pricing (91) and competitor loss (92), suggesting product fit drives more churn than price.
-- **Cybersecurity has the lowest churn rate but the highest revenue at risk ($279K)** of any industry — fewer churned accounts, but higher-value ones. Revenue concentration matters as much as churn rate.
-- **Product usage, error rates, and support response time show little to no difference between churned and retained customers** — in some cases the opposite of what's expected (churned customers had a *faster* average first response than retained ones). This is an honest finding: churn in this dataset correlates more with industry, geography, and revenue concentration than with usage friction or support quality.
+- **500 customers** are included in the analysis.
+- **110 customers are churned**, resulting in an observed churn rate of **22.00%**.
+- Churn rates are approximately 22% across Basic, Enterprise, and Pro plans.
+- **DevTools** has the highest observed industry churn rate at **30.97%**.
+- **Germany** has the highest observed country churn rate at **32.00%**.
+- Feature-related issues are the most frequently observed churn reason in the churn-event analysis.
+- The project compares product usage, product errors, support experience, and satisfaction between retained and churned customers.
+- The predictive models show limited separation between churned and retained customers in the current dataset.
+
+---
+
+# 📌 Project Outputs
+
+The project produces:
+
+### SQL
+Business-question-driven SQL analysis.
+
+### Power BI
+Interactive churn, revenue, product, and support dashboards.
+
+### Machine Learning
+Churn model comparison, ROC curves, confusion matrix, risk segments, and SHAP analysis.
 
 ---
 

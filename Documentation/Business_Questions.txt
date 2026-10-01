@@ -1,0 +1,31 @@
+SQL
+01_customer_churn.sql
+- What is the customer churn rate?
+- Churn by plan
+- Churn by industry
+- Churn by country
+- Churn by company size
+- Does billing frequency affect churn?
+- When does churn occur?
+02_revenue_analysis.sql
+- What is Total MRR?
+- What is Total ARR?
+- What is Churned MRR?
+- What is Churned MRR as a percentage of current MRR?
+- Which plans have the highest churned MRR?
+- Which industries have the highest churned MRR?
+- Which countries have the highest churned MRR?
+03_churn_drivers.sql
+- What are the top final churn reasons?
+- Which final churn reason is associated with the highest lost MRR?
+04_product_usage.sql
+- What is the average usage for retained customers?
+- What is the average usage for churned customers?
+- Do churned customers have more product errors?
+- Is low engagement associated with higher churn?
+05_support_analysis.sql
+- Do churned customers have more tickets?
+- Do churned customers have slower first responses?
+- Do churned customers have longer resolution times?
+- Does satisfaction differ between churned and retained customers?
+- What is churn by satisfaction level?
